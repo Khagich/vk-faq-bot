@@ -1,0 +1,9 @@
+# docker-compose.test.yml
+services:
+  bot-tests:
+    build: .
+    container_name: bot-tests
+    command: python -m pytest tests/ -v --cov=src --cov-report=term-missing
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
