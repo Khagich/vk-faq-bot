@@ -1,0 +1,27 @@
+# docker-compose.yml
+
+services:
+  faq-bot:
+    build: .
+    container_name: vk-faq-bot
+    env_file:
+      - .env  # загружаем переменные окружения
+    environment:
+      - BOT_NAME=VK WorkSpace FAQ Bot
+      - DATA_FILE=/app/data/faq_data.json
+    volumes:
+      # Монтируем папку с данными для сохранения FAQ
+      - ./data:/app/data
+      # Для разработки - монтируем код для hot reload
+      # - ./src:/app/src:ro
+    restart: unless-stopped
+    stdin_open: true  # для интерактивного ввода
+    tty: true         # для интерактивного ввода
+    # ДОБАВЬТЕ ЭТУ СТРОКУ ↓
+    command: python -u src/bot.py
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

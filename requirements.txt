@@ -1,0 +1,2 @@
+# ТОЛЬКО внешние библиотеки (difflib уже в Python!)
+python-dotenv==1.0.0
