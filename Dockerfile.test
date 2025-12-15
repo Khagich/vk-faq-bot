@@ -1,6 +1,6 @@
-# Dockerfile.test
 FROM python:3.11-slim
 
+# ЯВНО устанавливаем WORKDIR
 WORKDIR /app
 
 # Устанавливаем системные зависимости
@@ -13,8 +13,8 @@ COPY requirements.txt requirements-test.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements-test.txt
 
-# Копируем код
+# Копируем код В текущий WORKDIR (/app)
 COPY . .
 
-# По умолчанию запускаем тесты
-CMD ["python", "-m", "pytest", "tests/", "-v", "--cov=src", "--junitxml=test-results.xml"]
+# ВАЖНО: Используем абсолютный путь для pytest
+CMD ["sh", "-c", "cd /app && pwd && ls -la && echo '=== Tests ===' && ls -la tests/ && python -m pytest /app/tests/ -v --cov=/app/src --junitxml=/app/test-results.xml"]
