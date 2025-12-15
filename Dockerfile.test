@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# ЯВНО устанавливаем WORKDIR
 WORKDIR /app
 
 # Устанавливаем системные зависимости
@@ -13,8 +12,23 @@ COPY requirements.txt requirements-test.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements-test.txt
 
-# Копируем код В текущий WORKDIR (/app)
+# Копируем ВСЕ файлы из текущей директории
 COPY . .
 
-# ВАЖНО: Используем абсолютный путь для pytest
-CMD ["sh", "-c", "cd /app && pwd && ls -la && echo '=== Tests ===' && ls -la /app/tests/ && python -m pytest /app/tests/ -v --cov=/app/src --junitxml=/app/test-results.xml"]
+# Проверяем что tests/ скопировалась
+RUN echo "=== Проверка файлов в /app ===" && \
+    ls -la && \
+    echo "=== Проверка папки tests/ ===" && \
+    if [ -d "tests" ]; then \
+        echo "✅ Папка tests/ существует!" && \
+        ls -la tests/ && \
+        echo "✅ Файлы в tests/:" && \
+        find tests/ -name "*.py"; \
+    else \
+        echo "❌ Папка tests/ не найдена!" && \
+        echo "Ищем тестовые файлы:" && \
+        find /app -name "*test*.py" -type f; \
+    fi
+
+# Запускаем тесты
+CMD ["python", "-m", "pytest", "/app/tests/", "-v", "--cov=/app/src", "--junitxml=/app/test-results.xml"]
