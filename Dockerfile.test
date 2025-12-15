@@ -17,4 +17,4 @@ RUN pip install --no-cache-dir -r requirements-test.txt
 COPY . .
 
 # ВАЖНО: Используем абсолютный путь для pytest
-CMD ["sh", "-c", "cd /app && pwd && ls -la && echo '=== Tests ===' && ls -la tests/ && python -m pytest /app/tests/ -v --cov=/app/src --junitxml=/app/test-results.xml"]
+CMD ["sh", "-c", "cd /app && pwd && ls -la && echo '=== Tests ===' && ls -la /app/tests/ && python -m pytest /app/tests/ -v --cov=/app/src --junitxml=/app/test-results.xml"]
